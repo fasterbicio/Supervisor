@@ -1,0 +1,140 @@
+﻿<Window x:Class="Supervisor.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Supervisor"
+        mc:Ignorable="d" Name="Main"
+        Title="MainWindow" Height="800" Width="1280"
+        Loaded="Window_Loaded" Icon="media/remote.png" WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <local:NotBool x:Key="notBool"/>
+        <local:ConnectToColor x:Key="connectToColor"/>
+        <local:DisconnectToColor x:Key="disconnectToColor"/>
+    </Window.Resources>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <ToolBar Grid.Row="0" Grid.ColumnSpan="2" Margin="5 5 0 5" ToolBarTray.IsLocked="True" Background="White" Width="{Binding ElementName=Main, Path=ActualWidth}">
+            <Button ToolTip="New Device" Click="NewButton_Click">
+                <StackPanel>
+                    <Image Source="media\new.png" Height="20" RenderOptions.BitmapScalingMode="HighQuality"/>
+                    <Label HorizontalAlignment="Center">New</Label>
+                </StackPanel>
+            </Button>
+            <Button ToolTip="Open Device" Click="OpenButton_Click">
+                <StackPanel>
+                    <Image Source="media\open.png" Height="20" RenderOptions.BitmapScalingMode="HighQuality"/>
+                    <Label HorizontalAlignment="Center">Open</Label>
+                </StackPanel>
+            </Button>
+            <Button ToolTip="Open Machine Builder" Click="EditButton_Click" IsEnabled="{Binding Disconnected, Mode=TwoWay}">
+                <StackPanel>
+                    <Image Source="media/edit.png" Height="20" RenderOptions.BitmapScalingMode="HighQuality"/>
+                    <Label HorizontalAlignment="Center">Edit</Label>
+                </StackPanel>
+            </Button>
+
+            <Separator/>
+            <Button ToolTip="Connect to Device" Name="ConnectButton" Click="ConnectButton_Click" IsEnabled="{Binding Disconnected, Mode=TwoWay}"
+                Background="{Binding Connected, Mode=TwoWay, Converter={StaticResource connectToColor}}">
+                <StackPanel>
+                    <Image Source="media/play.png" Height="20" RenderOptions.BitmapScalingMode="HighQuality" />
+                    <Label HorizontalAlignment="Center">Connect</Label>
+                </StackPanel>
+            </Button>
+            <Button ToolTip="Disconnect from Device" Name="DisconnectButton" Click="DisconnectButton_Click" IsEnabled="{Binding Connected, Mode=TwoWay}"
+                Background="{Binding Disconnected, Mode=TwoWay, Converter={StaticResource disconnectToColor}}">
+                <StackPanel>
+                    <Image Source="media/stop.png" Height="20" RenderOptions.BitmapScalingMode="HighQuality"/>
+                    <Label HorizontalAlignment="Center">Disconnect</Label>
+                </StackPanel>
+            </Button>
+        </ToolBar>
+
+        <Expander Grid.Row="1" Grid.Column="0" ExpandDirection="Right" Margin="10"
+                  IsExpanded="{Binding IsEnabled, ElementName=ConnectButton, Mode=OneWay}">
+            <Expander.Header>
+                <TextBlock Text="Communication" >
+                    <TextBlock.LayoutTransform>
+                        <RotateTransform Angle="-90"/>
+                    </TextBlock.LayoutTransform>
+                </TextBlock>
+            </Expander.Header>
+
+            <Grid >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+
+                <Separator Grid.Column="2" Grid.RowSpan="7" Margin="10 0 10 0" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}"/>
+
+                <Label Grid.Row="0" Grid.Column="0" Margin="5">Port</Label>
+                <Label Grid.Row="1" Grid.Column="0" Margin="5">Baudrate</Label>
+                <Label Grid.Row="2" Grid.Column="0" Margin="5">Data Length</Label>
+                <Label Grid.Row="3" Grid.Column="0" Margin="5">Stop Bits</Label>
+                <Label Grid.Row="4" Grid.Column="0" Margin="5">Parity</Label>
+                <Label Grid.Row="5" Grid.Column="0" Margin="5">Slave Address</Label>
+
+                <ComboBox Grid.Row="0" Grid.Column="1" Margin="5" MinWidth="100" Name="PortsCombo" VerticalContentAlignment="Center" IsEnabled="{Binding Disconnected, Mode=TwoWay}"/>
+                <ComboBox Grid.Row="1" Grid.Column="1" Margin="5" Name="BaudCombo" VerticalContentAlignment="Center" IsEnabled="{Binding Disconnected, Mode=TwoWay}"/>
+                <ComboBox Grid.Row="2" Grid.Column="1" Margin="5" Name="DataCombo" VerticalContentAlignment="Center" IsEnabled="{Binding Disconnected, Mode=TwoWay}"/>
+                <ComboBox Grid.Row="3" Grid.Column="1" Margin="5" Name="StopCombo" VerticalContentAlignment="Center" IsEnabled="{Binding Disconnected, Mode=TwoWay}"/>
+                <ComboBox Grid.Row="4" Grid.Column="1" Margin="5" Name="ParityCombo" VerticalContentAlignment="Center" IsEnabled="{Binding Disconnected, Mode=TwoWay}"/>
+                <TextBox Grid.Row="5" Grid.Column="1" Margin="5" Name="SlaveText" VerticalContentAlignment="Center" IsEnabled="{Binding Disconnected, Mode=TwoWay}"/>
+
+                <Expander Grid.Row="6" Grid.ColumnSpan="2" Header="Advanced" Margin="0 5 0 0">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Label Grid.Row="0" Grid.Column="0" VerticalContentAlignment="Center" Margin="5">Timeout</Label>
+                        <Label Grid.Row="1" Grid.Column="0" VerticalContentAlignment="Center" Margin="5">Retries</Label>
+
+                        <TextBox Grid.Row="0" Grid.Column="1" VerticalContentAlignment="Center" Margin="5" Name="TimeoutText" IsEnabled="{Binding Disconnected, Mode=TwoWay}"/>
+                        <TextBox Grid.Row="1" Grid.Column="1" VerticalContentAlignment="Center" Margin="5" Name="RetriesText" IsEnabled="{Binding Disconnected, Mode=TwoWay}"/>
+
+                    </Grid>
+                </Expander>
+                
+            </Grid>
+        </Expander>
+
+        <ContentControl Grid.Row="1" Grid.Column="1" Name="ControlsStack" />
+        
+        <StatusBar Grid.Row="2" Grid.ColumnSpan="2" Name="LogBar">
+            <StatusBarItem>
+                <Label Margin="5" Content="Status" Name="LogLabel" />
+            </StatusBarItem>
+        </StatusBar>
+        
+    </Grid>
+</Window>

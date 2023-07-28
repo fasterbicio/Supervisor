@@ -1,0 +1,124 @@
+﻿<Window x:Class="Supervisor.BuilderWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Supervisor"
+        mc:Ignorable="d" Name="Main"
+        Title="Machine Builder" Height="800" Width="1024" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <local:SelectedToBool x:Key="selectedToBool"/>
+        <local:TypeToIndex x:Key="TypeToIndex"/>
+        <local:StringToStates x:Key="stringToStates"/>
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+
+            <ToolBarTray Grid.Column="0" Orientation="Vertical" Background="White" Margin="5">
+                <ToolBar Background="White" ToolBarTray.IsLocked="True" Height="{Binding ElementName=Main, Path=ActualHeight}">
+                    <Button ToolTip="Add Register" Click="Add_Click">
+                        <StackPanel>
+                            <Image Source="media/new.png" Height="20" RenderOptions.BitmapScalingMode="HighQuality"/>
+                            <Label HorizontalAlignment="Center">Add</Label>
+                        </StackPanel>
+                    </Button>
+                    <Button ToolTip="Delete Register" Click="Delete_Click">
+                        <StackPanel>
+                            <Image Source="media/delete.png" Height="20" RenderOptions.BitmapScalingMode="HighQuality"/>
+                            <Label HorizontalAlignment="Center">Delete</Label>
+                        </StackPanel>
+                    </Button>
+                    <Button ToolTip="Import From File" Click="Import_Click">
+                        <StackPanel>
+                            <Image Source="media/open.png" Height="20" RenderOptions.BitmapScalingMode="HighQuality"/>
+                            <Label HorizontalAlignment="Center">Import</Label>
+                        </StackPanel>
+                    </Button>
+                    <Button ToolTip="Export To File" Click="Export_Click">
+                        <StackPanel>
+                            <Image Source="media/save.png" Height="20" RenderOptions.BitmapScalingMode="HighQuality"/>
+                            <Label HorizontalAlignment="Center">Export</Label>
+                        </StackPanel>
+                    </Button>
+                    <Button ToolTip="Sort Registers" Click="Sort_Click">
+                        <StackPanel>
+                            <Image Source="media/sort.png" Height="20" RenderOptions.BitmapScalingMode="HighQuality"/>
+                            <Label HorizontalAlignment="Center">Sort</Label>
+                        </StackPanel>
+                    </Button>
+
+                </ToolBar>
+            </ToolBarTray>
+
+            <ListView Grid.Column="1" Margin="10" BorderThickness="1" BorderBrush="#FFABADB3" Foreground="Black" Name="ListviewRegisters"
+                    SelectedIndex="{Binding SelectedRegister, Mode=TwoWay}">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Type" Width="auto" DisplayMemberBinding="{Binding Path=Type, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                        <GridViewColumn Header="Address" Width="auto" DisplayMemberBinding="{Binding Path=Address, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                        <GridViewColumn Header="Description" Width="auto" DisplayMemberBinding="{Binding Path=Description, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                        <GridViewColumn Header="UM" Width="auto" DisplayMemberBinding="{Binding Path=UM, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                        <GridViewColumn Header="Gain" Width="auto" DisplayMemberBinding="{Binding Path=Gain, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, ConverterCulture=it-IT}" />
+                        <GridViewColumn Header="R/W" Width="auto" DisplayMemberBinding="{Binding Path=ReadWrite, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+
+            <Grid Grid.Column="2" Margin="5" Name="Editor">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Label Grid.Row="0" Grid.Column="0" Margin="5">Type</Label>
+                <Label Grid.Row="1" Grid.Column="0" Margin="5">Address</Label>
+                <Label Grid.Row="2" Grid.Column="0" Margin="5">R/W</Label>
+                <Label Grid.Row="3" Grid.Column="0" Margin="5">Gain</Label>
+                <Label Grid.Row="4" Grid.Column="0" Margin="5">Description</Label>
+                <Label Grid.Row="5" Grid.Column="0" Margin="5">UM</Label>
+                <Label Grid.Row="6" Grid.Column="0" Margin="5">States</Label>
+
+                <ComboBox Grid.Row="0" Grid.Column="1" Margin="5" MinWidth="200"
+                            SelectedIndex="{Binding Type, Mode=TwoWay, Converter={StaticResource TypeToIndex}}">
+                    <ComboBoxItem>Coil</ComboBoxItem>
+                    <ComboBoxItem>DiscreteInput</ComboBoxItem>
+                    <ComboBoxItem>HoldingRegister</ComboBoxItem>
+                    <ComboBoxItem>InputRegister</ComboBoxItem>
+                </ComboBox>
+                <TextBox Grid.Row="1" Grid.Column="1" Margin="5" VerticalContentAlignment="Center" Text="{Binding Address, Mode=TwoWay}" />
+                <CheckBox Grid.Row="2" Grid.Column="1" Margin="5" VerticalContentAlignment="Center" IsChecked="{Binding ReadWrite, Mode=TwoWay}" />
+                <TextBox Grid.Row="3" Grid.Column="1" Margin="5" VerticalContentAlignment="Center" Text="{Binding Gain, Mode=TwoWay, ConverterCulture=it-IT}" />
+                <TextBox Grid.Row="4" Grid.Column="1" Margin="5" VerticalContentAlignment="Center" Text="{Binding Description, Mode=TwoWay}" />
+                <TextBox Grid.Row="5" Grid.Column="1" Margin="5" VerticalContentAlignment="Center" Text="{Binding UM, Mode=TwoWay}" />
+                <TextBox Grid.Row="6" Grid.Column="1" Margin="5" MinWidth="150" Text="{Binding States, Mode=TwoWay, Converter={StaticResource stringToStates}}"
+                            TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
+
+            </Grid>
+
+        </Grid>
+        
+        <StackPanel Grid.Row="1" HorizontalAlignment="Center" Orientation="Horizontal">
+            <Button Margin="5" Width="120" Click="Ok_Click">Ok</Button>
+            <Button Margin="5" Width="120" Click="Cancel_Click">Cancel</Button>
+        </StackPanel>
+    </Grid>
+</Window>

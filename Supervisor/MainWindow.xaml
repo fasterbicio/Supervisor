@@ -10,7 +10,6 @@
     <Window.Resources>
         <local:NotBool x:Key="notBool"/>
         <local:ConnectToColor x:Key="connectToColor"/>
-        <local:DisconnectToColor x:Key="disconnectToColor"/>
     </Window.Resources>
     
     <Grid>
@@ -45,15 +44,13 @@
             </Button>
 
             <Separator/>
-            <Button ToolTip="Connect to Device" Name="ConnectButton" Click="ConnectButton_Click" IsEnabled="{Binding Disconnected, Mode=TwoWay}"
-                Background="{Binding Connected, Mode=TwoWay, Converter={StaticResource connectToColor}}">
+            <Button ToolTip="Connect to Device" Name="ConnectButton" Click="ConnectButton_Click" IsEnabled="{Binding Disconnected, Mode=TwoWay}">
                 <StackPanel>
                     <Image Source="media/play.png" Height="20" RenderOptions.BitmapScalingMode="HighQuality" />
                     <Label HorizontalAlignment="Center">Connect</Label>
                 </StackPanel>
             </Button>
-            <Button ToolTip="Disconnect from Device" Name="DisconnectButton" Click="DisconnectButton_Click" IsEnabled="{Binding Connected, Mode=TwoWay}"
-                Background="{Binding Disconnected, Mode=TwoWay, Converter={StaticResource disconnectToColor}}">
+            <Button ToolTip="Disconnect from Device" Name="DisconnectButton" Click="DisconnectButton_Click" IsEnabled="{Binding Connected, Mode=TwoWay}">
                 <StackPanel>
                     <Image Source="media/stop.png" Height="20" RenderOptions.BitmapScalingMode="HighQuality"/>
                     <Label HorizontalAlignment="Center">Disconnect</Label>
@@ -131,6 +128,11 @@
         <ContentControl Grid.Row="1" Grid.Column="1" Name="ControlsStack" />
         
         <StatusBar Grid.Row="2" Grid.ColumnSpan="2" Name="LogBar">
+            <StatusBarItem>
+                <Canvas Margin="5 0 0 0" Width="25" Height="25">
+                    <Ellipse Width="25" Height="25" StrokeThickness="1" Stroke="White" Fill="{Binding Connected, Mode=TwoWay, Converter={StaticResource connectToColor}}" />
+                </Canvas>
+            </StatusBarItem>
             <StatusBarItem>
                 <Label Margin="5" Content="Status" Name="LogLabel" />
             </StatusBarItem>

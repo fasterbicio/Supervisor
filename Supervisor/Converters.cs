@@ -102,25 +102,8 @@ namespace Supervisor
             bool connected = (bool)value;
 
             if (connected)
-                return new SolidColorBrush(Color.FromArgb(50, 0x00, 0xFF, 0x00));
-            return Brushes.White;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return false;
-        }
-    }
-
-    public class DisconnectToColor : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            bool disconnected = (bool)value;
-
-            if (disconnected)
-                return new SolidColorBrush(Color.FromArgb(50, 0xFF, 0x00, 0x00));
-            return Brushes.White;
+                return Brushes.LightGreen;
+            return Brushes.OrangeRed;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

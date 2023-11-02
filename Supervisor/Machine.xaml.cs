@@ -328,7 +328,7 @@ namespace Supervisor
             var result = commands;
             for (int i = 0, j = 1; j < result.Count; i++, j++)
             {
-                while (result[i].StartAddress + result[i].Quantity == result[j].StartAddress & result[i].ReadWrite == result[j].ReadWrite)
+                while (j < result.Count && result[i].StartAddress + result[i].Quantity == result[j].StartAddress & result[i].ReadWrite == result[j].ReadWrite)
                 {
                     result[i].Quantity++;
                     if (result[i].ReadWrite == CommandDirection.Write)

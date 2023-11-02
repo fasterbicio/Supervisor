@@ -189,6 +189,8 @@ namespace Supervisor
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             List<string> states = (List<string>)value;
+            if (states.Count <= 1) return string.Empty;
+
             string result = string.Empty;
 
             for (int i = 0; i < states.Count; i++)
@@ -202,6 +204,8 @@ namespace Supervisor
             string statesList = (string)value;
             string[] separator = { "\r\n" };
             string[] states = statesList.Split(separator, StringSplitOptions.None);
+            if (states.Length <= 1)
+                return new List<string>();
             return states.ToList();
         }
     }

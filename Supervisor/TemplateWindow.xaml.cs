@@ -55,6 +55,8 @@ namespace Supervisor
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Filter = "XML file | *.xml";
             sfd.DefaultExt = ".xml";
+            if (Settings.Default.NewFilePath == string.Empty)
+                Settings.Default.NewFilePath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             if (new DirectoryInfo(Settings.Default.NewFilePath).Exists)
                 sfd.InitialDirectory = Settings.Default.NewFilePath;
             if (sfd.ShowDialog() == true)

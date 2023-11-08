@@ -36,7 +36,7 @@
                     <Label HorizontalAlignment="Center">Open</Label>
                 </StackPanel>
             </Button>
-            <Button ToolTip="Open Machine Builder" Click="EditButton_Click" IsEnabled="{Binding Disconnected, Mode=TwoWay}">
+            <Button ToolTip="Open Machine Builder" Click="EditButton_Click" IsEnabled="{Binding Disconnected}">
                 <StackPanel>
                     <Image Source="media/edit.png" Height="20" RenderOptions.BitmapScalingMode="HighQuality"/>
                     <Label HorizontalAlignment="Center">Edit</Label>
@@ -44,13 +44,13 @@
             </Button>
 
             <Separator/>
-            <Button ToolTip="Connect to Device" Name="ConnectButton" Click="ConnectButton_Click" IsEnabled="{Binding Disconnected, Mode=TwoWay}">
+            <Button ToolTip="Connect to Device" Name="ConnectButton" Click="ConnectButton_Click" IsEnabled="{Binding Disconnected}">
                 <StackPanel>
                     <Image Source="media/play.png" Height="20" RenderOptions.BitmapScalingMode="HighQuality" />
                     <Label HorizontalAlignment="Center">Connect</Label>
                 </StackPanel>
             </Button>
-            <Button ToolTip="Disconnect from Device" Name="DisconnectButton" Click="DisconnectButton_Click" IsEnabled="{Binding Connected, Mode=TwoWay}">
+            <Button ToolTip="Disconnect from Device" Name="DisconnectButton" Click="DisconnectButton_Click" IsEnabled="{Binding Connected}">
                 <StackPanel>
                     <Image Source="media/stop.png" Height="20" RenderOptions.BitmapScalingMode="HighQuality"/>
                     <Label HorizontalAlignment="Center">Disconnect</Label>
@@ -94,12 +94,12 @@
                 <Label Grid.Row="4" Grid.Column="0" Margin="5">Parity</Label>
                 <Label Grid.Row="5" Grid.Column="0" Margin="5">Slave Address</Label>
 
-                <ComboBox Grid.Row="0" Grid.Column="1" Margin="5" MinWidth="100" Name="PortsCombo" VerticalContentAlignment="Center" IsEnabled="{Binding Disconnected, Mode=TwoWay}"/>
-                <ComboBox Grid.Row="1" Grid.Column="1" Margin="5" Name="BaudCombo" VerticalContentAlignment="Center" IsEnabled="{Binding Disconnected, Mode=TwoWay}"/>
-                <ComboBox Grid.Row="2" Grid.Column="1" Margin="5" Name="DataCombo" VerticalContentAlignment="Center" IsEnabled="{Binding Disconnected, Mode=TwoWay}"/>
-                <ComboBox Grid.Row="3" Grid.Column="1" Margin="5" Name="StopCombo" VerticalContentAlignment="Center" IsEnabled="{Binding Disconnected, Mode=TwoWay}"/>
-                <ComboBox Grid.Row="4" Grid.Column="1" Margin="5" Name="ParityCombo" VerticalContentAlignment="Center" IsEnabled="{Binding Disconnected, Mode=TwoWay}"/>
-                <TextBox Grid.Row="5" Grid.Column="1" Margin="5" Name="SlaveText" VerticalContentAlignment="Center" IsEnabled="{Binding Disconnected, Mode=TwoWay}"/>
+                <ComboBox Grid.Row="0" Grid.Column="1" Margin="5" MinWidth="100" Name="PortsCombo" VerticalContentAlignment="Center" IsEnabled="{Binding Disconnected}"/>
+                <ComboBox Grid.Row="1" Grid.Column="1" Margin="5" Name="BaudCombo" VerticalContentAlignment="Center" IsEnabled="{Binding Disconnected}"/>
+                <ComboBox Grid.Row="2" Grid.Column="1" Margin="5" Name="DataCombo" VerticalContentAlignment="Center" IsEnabled="{Binding Disconnected}"/>
+                <ComboBox Grid.Row="3" Grid.Column="1" Margin="5" Name="StopCombo" VerticalContentAlignment="Center" IsEnabled="{Binding Disconnected}"/>
+                <ComboBox Grid.Row="4" Grid.Column="1" Margin="5" Name="ParityCombo" VerticalContentAlignment="Center" IsEnabled="{Binding Disconnected}"/>
+                <TextBox Grid.Row="5" Grid.Column="1" Margin="5" Name="SlaveText" VerticalContentAlignment="Center" IsEnabled="{Binding Disconnected}"/>
 
                 <Expander Grid.Row="6" Grid.ColumnSpan="2" Header="Advanced" Margin="0 5 0 0">
                     <Grid>
@@ -116,8 +116,8 @@
                         <Label Grid.Row="0" Grid.Column="0" VerticalContentAlignment="Center" Margin="5">Timeout</Label>
                         <Label Grid.Row="1" Grid.Column="0" VerticalContentAlignment="Center" Margin="5">Retries</Label>
 
-                        <TextBox Grid.Row="0" Grid.Column="1" VerticalContentAlignment="Center" Margin="5" Name="TimeoutText" IsEnabled="{Binding Disconnected, Mode=TwoWay}"/>
-                        <TextBox Grid.Row="1" Grid.Column="1" VerticalContentAlignment="Center" Margin="5" Name="RetriesText" IsEnabled="{Binding Disconnected, Mode=TwoWay}"/>
+                        <TextBox Grid.Row="0" Grid.Column="1" VerticalContentAlignment="Center" Margin="5" Name="TimeoutText" IsEnabled="{Binding Disconnected}"/>
+                        <TextBox Grid.Row="1" Grid.Column="1" VerticalContentAlignment="Center" Margin="5" Name="RetriesText" IsEnabled="{Binding Disconnected}"/>
 
                     </Grid>
                 </Expander>
@@ -130,7 +130,7 @@
         <StatusBar Grid.Row="2" Grid.ColumnSpan="2" Name="LogBar">
             <StatusBarItem>
                 <Canvas Margin="5 0 0 0" Width="25" Height="25">
-                    <Ellipse Width="25" Height="25" StrokeThickness="1" Stroke="White" Fill="{Binding Connected, Mode=TwoWay, Converter={StaticResource connectToColor}}" />
+                    <Ellipse Width="25" Height="25" StrokeThickness="1" Stroke="White" Fill="{Binding Connected, Converter={StaticResource connectToColor}}" />
                 </Canvas>
             </StatusBarItem>
             <StatusBarItem>

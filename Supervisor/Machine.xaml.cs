@@ -182,12 +182,17 @@ namespace Supervisor
             }
             return Command.MergeCommands(Command.SortCommands(inputsRead));
         }
-        public void StoreData(ModbusResultArgs result)
+        public void StoreData(ModbusMessageArgs result)
         {
             for (int i = 0; i < result.Data.Length; i++)
                 StoreValue(result.Type, result.StartAddress + i, result.Data[i]);
         }
-        public void ResetFlags(ModbusResultArgs result)
+        public void GetData(ref ModbusMessageArgs request)
+        {
+            for (int i = 0; i < request.Data.Length; i++)
+                GetValue(request.Type, request.StartAddress + i, ref request.Data[i]);
+        }
+        public void ResetFlags(ModbusMessageArgs result)
         {
             for (int i = 0; i < result.Data.Length; i++)
                 ResetFlag(result.Type, result.StartAddress + i);
@@ -213,6 +218,27 @@ namespace Supervisor
                     {
                         if (!Settings[i].Freeze)
                             Settings[i].SetValue(value);
+                    }
+                }
+            }
+        }
+        private void GetValue(RegisterType type, int address, ref short data)
+        {
+            for (int i = 0; i < Registers.Count; i++)
+            {
+                if (Registers[i].Address == address)
+                {
+                    if (Registers[i].Type == type)
+                        data = Registers[i].Value;
+                }
+            }
+            for (int i = 0; i < Settings.Count; i++)
+            {
+                if (Settings[i].Address == address)
+                {
+                    if (Settings[i].Type == type)
+                    {
+                        data = Settings[i].Value;
                     }
                 }
             }

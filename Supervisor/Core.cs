@@ -5,7 +5,13 @@ using System.Timers;
 
 namespace Supervisor
 {
-    public class Core
+    public abstract class Core
+    {
+        public abstract void Start();
+        public abstract void Stop();
+    }
+
+    public class MasterCore : Core
     {
         public bool Active { get; set; }
         public event EventHandler OperationFailed = null;
@@ -13,7 +19,7 @@ namespace Supervisor
         private const double mainTime = 100;
         private int retries = 0;
 
-        private Communication communication;
+        private MasterCommunication communication;
         private Machine machine;
         private Timer mainTimer;
         private List<Command> stack;
@@ -30,7 +36,7 @@ namespace Supervisor
             ReadInputRegisters
         }
 
-        public Core(Communication communication, Machine machine)
+        public MasterCore(MasterCommunication communication, Machine machine)
         {
             mainTimer = new Timer(mainTime);
             mainTimer.Elapsed += MainTimer_Elapsed;
@@ -42,7 +48,7 @@ namespace Supervisor
             this.machine = machine;
         }
 
-        public void Start()
+        public override void Start()
         {
             if (!communication.IsConnected) return;
 
@@ -52,7 +58,7 @@ namespace Supervisor
             mainTimer.Start();
         }
 
-        public void Stop()
+        public override void Stop()
         {
             mainTimer.Stop();
             Active = false;
@@ -140,12 +146,12 @@ namespace Supervisor
             CoreFsm();
         }
 
-        private void Communication_WriteComplete(object sender, ModbusResultArgs e)
+        private void Communication_WriteComplete(object sender, ModbusMessageArgs e)
         {
             machine.ResetFlags(e);
         }
 
-        private void Communication_ReadComplete(object sender, ModbusResultArgs e)
+        private void Communication_ReadComplete(object sender, ModbusMessageArgs e)
         {
             machine.StoreData(e);
         }

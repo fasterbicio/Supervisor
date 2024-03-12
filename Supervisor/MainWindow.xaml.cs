@@ -80,10 +80,10 @@ namespace Supervisor
                 WriteTimeout = Settings.Default.Timeout
             };
 
-            communication = new Communication(port);
+            communication = new MasterCommunication(port);
+            communication.SlaveAddress = byte.Parse(SlaveText.Text);
             communication.Message += Communication_Message;
             communication.StatusChanged += Communication_StatusChanged;
-            communication.SlaveAddress = byte.Parse(SlaveText.Text);
             return communication.Connect();
         }
 
@@ -172,8 +172,8 @@ namespace Supervisor
 
         private void Run()
         {
-            core = new Core(communication, machine);
-            core.OperationFailed += Core_OperationFailed;
+            core = new MasterCore((MasterCommunication)communication, machine);
+            ((MasterCore)core).OperationFailed += Core_OperationFailed;
             core.Start();
         }
 

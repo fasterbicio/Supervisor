@@ -1,11 +1,23 @@
 ﻿using Modbus.Device;
 using System;
 using System.IO.Ports;
+using System.Threading;
 
 namespace Supervisor
 {
-    public class Communication
+    public abstract class Communication
     {
+        public enum Functions
+        {
+            ReadCoils = 0x01,
+            ReadDiscretes = 0x02,
+            ReadHoldings = 0x03,
+            ReadInputs = 0x04,
+            WriteCoil = 0x05,
+            WriteHolding = 0x06,
+            WriteMultiCoils = 0x0F,
+            WriteMultiHoldings = 0x10
+        }
         public static string[] Baudrates =
         {
             "1200",
@@ -32,28 +44,37 @@ namespace Supervisor
             "Even"
         };
         public byte SlaveAddress { get; set; }
+        public abstract event EventHandler<LogArgs> Message;
+        public abstract event EventHandler<bool> StatusChanged;
+
+        public abstract bool Connect();
+        public abstract void Disconnect();
+    }
+
+    public class MasterCommunication : Communication
+    {
         public bool IsConnected
         {
             get { return _IsConnected; }
             set { _IsConnected = value; StatusChanged.Invoke(this, _IsConnected); }
         }
-        public event EventHandler<LogArgs> Message = null;
-        public event EventHandler<ModbusResultArgs> ReadComplete = null;
-        public event EventHandler<ModbusResultArgs> WriteComplete = null;
-        public event EventHandler<bool> StatusChanged = null;
+        public override event EventHandler<LogArgs> Message = null;
+        public override event EventHandler<bool> StatusChanged = null;
+        public event EventHandler<ModbusMessageArgs> ReadComplete = null;
+        public event EventHandler<ModbusMessageArgs> WriteComplete = null;
 
         private SerialPort port;
         private ModbusSerialMaster master;
         private bool _IsConnected;
 
-        public Communication(SerialPort port)
+        public MasterCommunication(SerialPort port)
         {
             this.port = port;
             this.port.ReadTimeout = 300;
             this.port.WriteTimeout = 300;
         }
 
-        public bool Connect()
+        public override bool Connect()
         {
             if (port == null) return false;
 
@@ -61,7 +82,7 @@ namespace Supervisor
             {
                 port.Open();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Message.Invoke(this, new LogArgs(e.Message, LogArgs.LogStatus.Error));
                 return false;
@@ -71,7 +92,7 @@ namespace Supervisor
             {
                 master = ModbusSerialMaster.CreateRtu(port);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Message.Invoke(this, new LogArgs(e.Message, LogArgs.LogStatus.Error));
                 return false;
@@ -82,7 +103,7 @@ namespace Supervisor
             return true;
         }
 
-        public void Disconnect()
+        public override void Disconnect()
         {
             master.Dispose();
             if (port == null) return;
@@ -93,11 +114,11 @@ namespace Supervisor
             IsConnected = false;
         }
 
-        public bool SendCommand( Command command)
+        public bool SendCommand(Command command)
         {
             if (!IsConnected) return false;
 
-            switch(command.Type)
+            switch (command.Type)
             {
                 case RegisterType.Coil:
                     if (command.ReadWrite == CommandDirection.Write)
@@ -127,7 +148,7 @@ namespace Supervisor
             try
             {
                 var data = master.ReadCoils(SlaveAddress, command.StartAddress, command.Quantity);
-                ReadComplete.Invoke(this, new ModbusResultArgs(SlaveAddress, RegisterType.Coil, command.StartAddress, data));
+                ReadComplete.Invoke(this, new ModbusMessageArgs(SlaveAddress, RegisterType.Coil, command.StartAddress, data));
                 return true;
             }
             catch (Exception e)
@@ -143,7 +164,7 @@ namespace Supervisor
             try
             {
                 var data = master.ReadInputs(SlaveAddress, command.StartAddress, command.Quantity);
-                ReadComplete.Invoke(this, new ModbusResultArgs(SlaveAddress, RegisterType.DiscreteInput, command.StartAddress, data));
+                ReadComplete.Invoke(this, new ModbusMessageArgs(SlaveAddress, RegisterType.DiscreteInput, command.StartAddress, data));
                 return true;
             }
             catch (Exception e)
@@ -159,7 +180,7 @@ namespace Supervisor
             try
             {
                 var data = master.ReadHoldingRegisters(SlaveAddress, command.StartAddress, command.Quantity);
-                ReadComplete.Invoke(this, new ModbusResultArgs(SlaveAddress, RegisterType.HoldingRegister, command.StartAddress, data));
+                ReadComplete.Invoke(this, new ModbusMessageArgs(SlaveAddress, RegisterType.HoldingRegister, command.StartAddress, data));
                 return true;
             }
             catch (Exception e)
@@ -175,7 +196,7 @@ namespace Supervisor
             try
             {
                 var data = master.ReadInputRegisters(SlaveAddress, command.StartAddress, command.Quantity);
-                ReadComplete.Invoke(this, new ModbusResultArgs(SlaveAddress, RegisterType.InputRegister, command.StartAddress, data));
+                ReadComplete.Invoke(this, new ModbusMessageArgs(SlaveAddress, RegisterType.InputRegister, command.StartAddress, data));
                 return true;
             }
             catch (Exception e)
@@ -195,7 +216,7 @@ namespace Supervisor
                     master.WriteSingleCoil(SlaveAddress, command.StartAddress, data[0]);
                 else
                     master.WriteMultipleCoils(SlaveAddress, command.StartAddress, data);
-                WriteComplete.Invoke(this, new ModbusResultArgs(SlaveAddress, RegisterType.Coil, command.StartAddress, data));
+                WriteComplete.Invoke(this, new ModbusMessageArgs(SlaveAddress, RegisterType.Coil, command.StartAddress, data));
                 return true;
             }
             catch (Exception e)
@@ -215,7 +236,7 @@ namespace Supervisor
                     master.WriteSingleRegister(SlaveAddress, command.StartAddress, data[0]);
                 else
                     master.WriteMultipleRegisters(SlaveAddress, command.StartAddress, data);
-                WriteComplete.Invoke(this, new ModbusResultArgs(SlaveAddress, RegisterType.HoldingRegister, command.StartAddress, data));
+                WriteComplete.Invoke(this, new ModbusMessageArgs(SlaveAddress, RegisterType.HoldingRegister, command.StartAddress, data));
                 return true;
             }
             catch (Exception e)
@@ -235,14 +256,14 @@ namespace Supervisor
         }
     }
 
-    public class ModbusResultArgs : EventArgs
+    public class ModbusMessageArgs : EventArgs
     {
         public byte Slave { get; set; }
         public RegisterType Type { get; set; }
         public ushort StartAddress { get; set; }
         public short[] Data { get; set; }
 
-        public ModbusResultArgs(byte slave, RegisterType type, ushort start, short[] data)
+        public ModbusMessageArgs(byte slave, RegisterType type, ushort start, short[] data)
         {
             Slave = slave;
             Type = type;
@@ -250,7 +271,7 @@ namespace Supervisor
             Data = data;
         }
 
-        public ModbusResultArgs(byte slave, RegisterType type, ushort start, ushort[] data)
+        public ModbusMessageArgs(byte slave, RegisterType type, ushort start, ushort[] data)
         {
             Slave = slave;
             Type = type;
@@ -258,7 +279,7 @@ namespace Supervisor
             Data = UshortToShort(data);
         }
 
-        public ModbusResultArgs(byte slave, RegisterType type, ushort start, bool[] data)
+        public ModbusMessageArgs(byte slave, RegisterType type, ushort start, bool[] data)
         {
             Slave = slave;
             Type = type;

@@ -85,7 +85,7 @@
                     <RowDefinition Height="auto" />
                 </Grid.RowDefinitions>
 
-                <Separator Grid.Column="2" Grid.RowSpan="7" Margin="10 0 10 0" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}"/>
+                <Separator Grid.Column="2" Grid.RowSpan="8" Margin="10 0 10 0" Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}"/>
 
                 <Label Grid.Row="0" Grid.Column="0" Margin="5">Port</Label>
                 <Label Grid.Row="1" Grid.Column="0" Margin="5">Baudrate</Label>
@@ -100,7 +100,7 @@
                 <ComboBox Grid.Row="3" Grid.Column="1" Margin="5" Name="StopCombo" VerticalContentAlignment="Center" IsEnabled="{Binding Disconnected}"/>
                 <ComboBox Grid.Row="4" Grid.Column="1" Margin="5" Name="ParityCombo" VerticalContentAlignment="Center" IsEnabled="{Binding Disconnected}"/>
                 <TextBox Grid.Row="5" Grid.Column="1" Margin="5" Name="SlaveText" VerticalContentAlignment="Center" IsEnabled="{Binding Disconnected}"/>
-
+                
                 <Expander Grid.Row="6" Grid.ColumnSpan="2" Header="Advanced" Margin="0 5 0 0">
                     <Grid>
                         <Grid.RowDefinitions>

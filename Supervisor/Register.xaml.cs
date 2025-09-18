@@ -13,6 +13,11 @@ namespace Supervisor
     public partial class Register : UserControl, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
+        public string FullDescription { get
+            {
+                return GetFullDescription();
+            }
+        }
         public string Description { get; set; }
         public string UM { get; set; }
         public List<string> States { get; set; }
@@ -132,6 +137,28 @@ namespace Supervisor
         {
             Value = newValue;
             Modified = false;
+        }
+
+        public string GetFullDescription()
+        {
+            string type;
+            switch (Type)
+            {
+                case RegisterType.InputRegister:
+                    type = "IR";
+                    break;
+                default:
+                case RegisterType.HoldingRegister:
+                    type = "HR";
+                    break;
+                case RegisterType.Coil:
+                    type = "C";
+                    break;
+                case RegisterType.DiscreteInput:
+                    type = "D";
+                    break;
+            }
+            return $"{type}{Address}: {Description}";
         }
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)

@@ -161,13 +161,15 @@ namespace Supervisor
             ControlsStack.Content = machine;
         }
 
-        private void CreateMachine(string path)
+        private bool CreateMachine(string path)
         {
             machine = MachineSerializer.Deserialize(path);
-            if (machine == null) return;
+            machine.Model = Path.GetFileNameWithoutExtension(path);
+            if (machine == null) return false;
             BuildUI();
             Created = true;
             Disconnected = true;
+            return true;
         }
 
         private void Run()
@@ -243,7 +245,8 @@ namespace Supervisor
                     Log($"New device creation failed: {exc.Message}", LogArgs.LogStatus.Error);
                     return;
                 }
-                CreateMachine(tw.NewFile);
+                if (!CreateMachine(tw.NewFile))
+                    Log($"New device creation failed", LogArgs.LogStatus.Error);
             }
         }
 
@@ -253,7 +256,10 @@ namespace Supervisor
             ofd.Filter = "XML file | *.xml";
             ofd.DefaultExt = ".xml";
             if (ofd.ShowDialog() == true)
-                CreateMachine(ofd.FileName);
+            {
+                if (!CreateMachine(ofd.FileName))
+                    Log($"Device loading failed", LogArgs.LogStatus.Error);
+            }
         }
 
         private void EditButton_Click(object sender, RoutedEventArgs e)

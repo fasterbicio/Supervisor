@@ -22,7 +22,7 @@
         </Grid.ColumnDefinitions>
 
         <Label Grid.Column="0" Margin="0" VerticalAlignment="Center" HorizontalAlignment="Left"
-               Content="{Binding Description}" />
+               Content="{Binding FullDescription}" />
         <Label Grid.Column="2" Margin="0" VerticalAlignment="Center" HorizontalAlignment="Right"
                Content="{Binding UM}" />
 

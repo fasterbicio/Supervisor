@@ -25,11 +25,16 @@ namespace Supervisor
         public int Address { get; set; }
         public RegisterType Type { get; set; }
         public double Gain { get; set; }
-        public bool Freeze { get; set; }
+        public bool Keep { get; set; }
         public bool Modified
         {
             get { return _modified; }
-            set { _modified = value; OnPropertyChanged(); }
+            set
+            {
+                _modified = value;
+                IsModified?.Invoke(this, EventArgs.Empty);
+                OnPropertyChanged();
+            }
         }
         public bool IsLabel
         {
@@ -121,6 +126,7 @@ namespace Supervisor
             get { return Value * Gain; }
             set { Value = Convert.ToInt16(value / Gain); Modified = true; OnPropertyChanged(); }
         }
+        public event EventHandler IsModified;
 
         private short _value;
         private bool _modified;
@@ -183,20 +189,20 @@ namespace Supervisor
         {
             TextBox tb = (TextBox)sender;
             tb.SelectAll();
-            Freeze = true;
+            Keep = true;
         }
 
         private void TextBox_GotMouseCapture(object sender, MouseEventArgs e)
         {
             TextBox tb = (TextBox)sender;
             tb.SelectAll();
-            Freeze = true;
+            Keep = true;
         }
 
         private void TextBox_LostFocus(object sender, System.Windows.RoutedEventArgs e)
         {
             if (!Modified)
-                Freeze = false;
+                Keep = false;
         }
 
         private void ComboBox_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -209,18 +215,18 @@ namespace Supervisor
 
         private void ComboBox_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
-            Freeze = true;
+            Keep = true;
         }
 
         private void ComboBox_GotMouseCapture(object sender, MouseEventArgs e)
         {
-            Freeze = true;
+            Keep = true;
         }
 
         private void Combo_LostFocus(object sender, System.Windows.RoutedEventArgs e)
         {
             if (!Modified)
-                Freeze = false;
+                Keep = false;
         }
     }
 }

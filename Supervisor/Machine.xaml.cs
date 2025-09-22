@@ -17,6 +17,7 @@ namespace Supervisor
         public int Type { get; set; }
         public List<Register> Registers { get; set; }
         public List<Register> Settings { get; set; }
+        public bool IsModified { get; set; }
 
         public Machine()
         {
@@ -24,6 +25,7 @@ namespace Supervisor
             Registers = new List<Register>();
             Settings = new List<Register>();
             DataContext = this;
+            LinkEvents();
         }
         public List<Command> GetCoilsWrite()
         {
@@ -35,7 +37,7 @@ namespace Supervisor
                 {
                     if (Settings[i].Modified)
                     {
-                        Settings[i].Freeze = false;
+                        Settings[i].Keep = false;
 
                         var command = new Command();
                         command.Type = RegisterType.Coil;
@@ -114,7 +116,7 @@ namespace Supervisor
                 {
                     if (Settings[i].Modified)
                     {
-                        Settings[i].Freeze = false;
+                        Settings[i].Keep = false;
 
                         var command = new Command();
                         command.Type = RegisterType.HoldingRegister;
@@ -136,14 +138,17 @@ namespace Supervisor
             {
                 if (Registers[i].Type == RegisterType.HoldingRegister)
                 {
-                    if (!Registers[i].Modified)
+                    if (!Registers[i].Keep)
                     {
-                        var command = new Command();
-                        command.Type = RegisterType.HoldingRegister;
-                        command.ReadWrite = CommandDirection.Read;
-                        command.StartAddress = (ushort)Registers[i].Address;
-                        command.Quantity = 1;
-                        holdingsRead.Add(command);
+                        if (!Registers[i].Modified)
+                        {
+                            var command = new Command();
+                            command.Type = RegisterType.HoldingRegister;
+                            command.ReadWrite = CommandDirection.Read;
+                            command.StartAddress = (ushort)Registers[i].Address;
+                            command.Quantity = 1;
+                            holdingsRead.Add(command);
+                        }
                     }
                 }
             }
@@ -151,14 +156,17 @@ namespace Supervisor
             {
                 if (Settings[i].Type == RegisterType.HoldingRegister)
                 {
-                    if (!Settings[i].Modified)
+                    if (!Settings[i].Keep)
                     {
-                        var command = new Command();
-                        command.Type = RegisterType.HoldingRegister;
-                        command.ReadWrite = CommandDirection.Read;
-                        command.StartAddress = (ushort)Settings[i].Address;
-                        command.Quantity = 1;
-                        holdingsRead.Add(command);
+                        if (!Settings[i].Modified)
+                        {
+                            var command = new Command();
+                            command.Type = RegisterType.HoldingRegister;
+                            command.ReadWrite = CommandDirection.Read;
+                            command.StartAddress = (ushort)Settings[i].Address;
+                            command.Quantity = 1;
+                            holdingsRead.Add(command);
+                        }
                     }
                 }
             }
@@ -200,7 +208,7 @@ namespace Supervisor
                 {
                     if (Registers[i].Type == type)
                     {
-                        if (!Registers[i].Freeze)
+                        if (!Registers[i].Keep)
                             Registers[i].SetValue(value);
                     }
                 }
@@ -211,7 +219,7 @@ namespace Supervisor
                 {
                     if (Settings[i].Type == type)
                     {
-                        if (!Settings[i].Freeze)
+                        if (!Settings[i].Keep)
                             Settings[i].SetValue(value);
                     }
                 }
@@ -227,6 +235,21 @@ namespace Supervisor
                         Settings[i].Modified = false;
                 }
             }
+        }
+        private void LinkEvents()
+        {
+            foreach(Register reg in Registers)
+            {
+                reg.IsModified += Register_IsModified;
+            }
+            foreach(Register reg in Settings)
+            {
+                reg.IsModified += Register_IsModified;
+            }
+        }
+        private void Register_IsModified(object sender, EventArgs e)
+        {
+            IsModified = true;
         }
         public MachineArchetype ToArchetype()
         {

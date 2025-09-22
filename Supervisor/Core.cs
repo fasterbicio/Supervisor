@@ -74,6 +74,12 @@ namespace Supervisor
                 }
             }
 
+            if (machine.IsModified)
+            {
+                status = CoreStatus.Init;
+                machine.IsModified = false;
+            }
+
             switch (status)
             {
                 case CoreStatus.Init:
@@ -82,31 +88,31 @@ namespace Supervisor
                     break;
 
                 case CoreStatus.WriteCoils:
-                    stack = machine.GetCoilsRead();
-                    status = CoreStatus.ReadCoils;
-                    break;
-
-                case CoreStatus.ReadCoils:
-                    stack = machine.GetDiscretesRead();
-                    status = CoreStatus.ReadDiscreteInputs;
-                    break;
-
-                case CoreStatus.ReadDiscreteInputs:
                     stack = machine.GetHoldingsWrite();
                     status = CoreStatus.WriteHoldingRegisters;
                     break;
 
                 case CoreStatus.WriteHoldingRegisters:
-                    stack = machine.GetHoldingsRead();
-                    status = CoreStatus.ReadHoldingRegisters;
+                    stack = machine.GetDiscretesRead();
+                    status = CoreStatus.ReadDiscreteInputs;
                     break;
 
-                case CoreStatus.ReadHoldingRegisters:
+                case CoreStatus.ReadDiscreteInputs:
                     stack = machine.GetInputsRead();
                     status = CoreStatus.ReadInputRegisters;
                     break;
 
                 case CoreStatus.ReadInputRegisters:
+                    stack = machine.GetCoilsRead();
+                    status = CoreStatus.ReadCoils;
+                    break;
+
+                case CoreStatus.ReadCoils:
+                    stack = machine.GetHoldingsRead();
+                    status = CoreStatus.ReadHoldingRegisters;
+                    break;
+
+                case CoreStatus.ReadHoldingRegisters:
                     stack = machine.GetCoilsWrite();
                     status = CoreStatus.WriteCoils;
                     break;
@@ -129,6 +135,9 @@ namespace Supervisor
                 else
                     OperationFailed.Invoke(this, null);
             }
+
+            if (machine.IsModified)
+                stack.Clear();
 
             retries = 0;
             if (stack.Count > 0)

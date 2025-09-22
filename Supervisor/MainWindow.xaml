@@ -11,6 +11,7 @@
         <local:NotBool x:Key="notBool"/>
         <local:ConnectToColor x:Key="connectToColor"/>
         <local:DisconnectToColor x:Key="disconnectToColor"/>
+        <local:BoolVisibility x:Key="boolVisibility"/>
     </Window.Resources>
     
     <Grid>
@@ -45,15 +46,13 @@
             </Button>
 
             <Separator/>
-            <Button ToolTip="Connect to Device" Name="ConnectButton" Click="ConnectButton_Click" IsEnabled="{Binding Disconnected, Mode=TwoWay}"
-                Background="{Binding Connected, Mode=TwoWay, Converter={StaticResource connectToColor}}">
+            <Button ToolTip="Connect to Device" Name="ConnectButton" Click="ConnectButton_Click" IsEnabled="{Binding Disconnected, Mode=TwoWay}">
                 <StackPanel>
                     <Image Source="media/play.png" Height="20" RenderOptions.BitmapScalingMode="HighQuality" />
                     <Label HorizontalAlignment="Center">Connect</Label>
                 </StackPanel>
             </Button>
-            <Button ToolTip="Disconnect from Device" Name="DisconnectButton" Click="DisconnectButton_Click" IsEnabled="{Binding Connected, Mode=TwoWay}"
-                Background="{Binding Disconnected, Mode=TwoWay, Converter={StaticResource disconnectToColor}}">
+            <Button ToolTip="Disconnect from Device" Name="DisconnectButton" Click="DisconnectButton_Click" IsEnabled="{Binding Connected, Mode=TwoWay}">
                 <StackPanel>
                     <Image Source="media/stop.png" Height="20" RenderOptions.BitmapScalingMode="HighQuality"/>
                     <Label HorizontalAlignment="Center">Disconnect</Label>
@@ -132,7 +131,36 @@
         
         <StatusBar Grid.Row="2" Grid.ColumnSpan="2" Name="LogBar">
             <StatusBarItem>
-                <Label Margin="5" Content="Status" Name="LogLabel" />
+                <Grid Width="20" Height="20" Margin="5 5 0 5">
+                    <Ellipse Width="20" Height="20" Fill="Red" HorizontalAlignment="Center" VerticalAlignment="Center"
+                             Visibility="{Binding Disconnected, Mode=TwoWay, Converter={StaticResource boolVisibility}}" />
+                    <Ellipse Width="20" Height="20" Fill="Green" HorizontalAlignment="Center" VerticalAlignment="Center"
+                             Visibility="{Binding Connected, Mode=TwoWay, Converter={StaticResource boolVisibility}}">
+                        <Ellipse.Style>
+                            <Style TargetType="Ellipse">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Connected}" Value="True">
+                                        <DataTrigger.EnterActions>
+                                            <BeginStoryboard x:Name="BlinkingStoryboard">
+                                                <Storyboard AutoReverse="True" RepeatBehavior="Forever">
+                                                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                     From="1.0" To="0.0"
+                                                     Duration="0:0:1"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </DataTrigger.EnterActions>
+                                        <DataTrigger.ExitActions>
+                                            <StopStoryboard BeginStoryboardName="BlinkingStoryboard"/>
+                                        </DataTrigger.ExitActions>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Ellipse.Style>
+                    </Ellipse>
+                </Grid>
+            </StatusBarItem>
+            <StatusBarItem>
+                <Label Margin="0 5 5 5" Content="Status" Name="LogLabel" />
             </StatusBarItem>
         </StatusBar>
         

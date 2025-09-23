@@ -156,6 +156,21 @@ namespace Supervisor
             });
         }
 
+        private void OpenBuilder()
+        {
+            BuilderWindow bw;
+            if (machine == null)
+                bw = new BuilderWindow();
+            else
+                bw = new BuilderWindow(machine.ToArchetype());
+
+            if (bw.ShowDialog() == true)
+            {
+                machine = bw.Machine.ToMachine();
+                BuildUI();
+            }
+        }
+
         private void BuildUI()
         {
             ControlsStack.Content = machine;
@@ -233,21 +248,8 @@ namespace Supervisor
 
         private void NewButton_Click(object sender, RoutedEventArgs e)
         {
-            TemplateWindow tw = new TemplateWindow();
-            if(tw.ShowDialog() == true)
-            {
-                try
-                {
-                    File.Copy(tw.SelectedTemplate, tw.NewFile, true);
-                }
-                catch(Exception exc)
-                {
-                    Log($"New device creation failed: {exc.Message}", LogArgs.LogStatus.Error);
-                    return;
-                }
-                if (!CreateMachine(tw.NewFile))
-                    Log($"New device creation failed", LogArgs.LogStatus.Error);
-            }
+            machine = null;
+            OpenBuilder();
         }
 
         private void OpenButton_Click(object sender, RoutedEventArgs e)
@@ -264,17 +266,7 @@ namespace Supervisor
 
         private void EditButton_Click(object sender, RoutedEventArgs e)
         {
-            BuilderWindow bw;
-            if (machine == null)
-                bw = new BuilderWindow();
-            else
-                bw = new BuilderWindow(machine.ToArchetype());
-
-            if (bw.ShowDialog() == true)
-            {
-                machine = bw.Machine.ToMachine();
-                BuildUI();
-            }
+            OpenBuilder();
         }
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)

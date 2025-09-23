@@ -96,7 +96,8 @@ namespace Supervisor
         {
             if (SelectedRegister < 0) return;
             Editor.DataContext = null;
-            Editor.DataContext = Registers[SelectedRegister];
+            if (Registers.Count > 0)
+                Editor.DataContext = Registers[SelectedRegister];
         }
 
         private void AssignToMachine()

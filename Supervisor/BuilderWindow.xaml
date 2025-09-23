@@ -38,6 +38,13 @@
                             <Label HorizontalAlignment="Center">Delete</Label>
                         </StackPanel>
                     </Button>
+                    <Button ToolTip="Sort Registers" Click="Sort_Click">
+                        <StackPanel>
+                            <Image Source="media/sort.png" Height="20" RenderOptions.BitmapScalingMode="HighQuality"/>
+                            <Label HorizontalAlignment="Center">Sort</Label>
+                        </StackPanel>
+                    </Button>
+                    <Separator />
                     <Button ToolTip="Import From File" Click="Import_Click">
                         <StackPanel>
                             <Image Source="media/open.png" Height="20" RenderOptions.BitmapScalingMode="HighQuality"/>
@@ -47,15 +54,10 @@
                     <Button ToolTip="Export To File" Click="Export_Click">
                         <StackPanel>
                             <Image Source="media/save.png" Height="20" RenderOptions.BitmapScalingMode="HighQuality"/>
-                            <Label HorizontalAlignment="Center">Export</Label>
+                            <Label HorizontalAlignment="Center">Save</Label>
                         </StackPanel>
                     </Button>
-                    <Button ToolTip="Sort Registers" Click="Sort_Click">
-                        <StackPanel>
-                            <Image Source="media/sort.png" Height="20" RenderOptions.BitmapScalingMode="HighQuality"/>
-                            <Label HorizontalAlignment="Center">Sort</Label>
-                        </StackPanel>
-                    </Button>
+
 
                 </ToolBar>
             </ToolBarTray>

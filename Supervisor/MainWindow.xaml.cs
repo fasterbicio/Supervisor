@@ -122,22 +122,22 @@ namespace Supervisor
             RetriesText.Text = Settings.Default.Retries.ToString();
         }
 
-        private void Log(string message, LogArgs.LogStatus color)
+        private void Log(string message, LogStatus color)
         {
             Dispatcher.Invoke(() =>
             {
                 LogLabel.Content = $"{DateTime.Now:HH:mm:ss} - {message}";
                 switch (color)
                 {
-                    case LogArgs.LogStatus.Ok:
+                    case LogStatus.Ok:
                         LogBar.Background = Brushes.White;
                         LogLabel.Foreground = Brushes.Black;
                         break;
-                    case LogArgs.LogStatus.Error:
+                    case LogStatus.Error:
                         LogBar.Background = Brushes.OrangeRed;
                         LogLabel.Foreground = Brushes.White;
                         break;
-                    case LogArgs.LogStatus.Success:
+                    case LogStatus.Success:
                         LogBar.Background = Brushes.LightGreen;
                         LogLabel.Foreground = Brushes.Black;
                         break;
@@ -228,7 +228,7 @@ namespace Supervisor
             v2 = Assembly.GetExecutingAssembly().GetName().Version.Minor;
 
             Title = $"Supervisor {v1}.{v2}";
-            Log("Ready", LogArgs.LogStatus.Ok);
+            Log("Ready", LogStatus.Ok);
         }
 
         private void Communication_Message(object sender, LogArgs e)
@@ -274,7 +274,7 @@ namespace Supervisor
             if (ofd.ShowDialog() == true)
             {
                 if (!CreateMachine(ofd.FileName))
-                    Log($"Device loading failed", LogArgs.LogStatus.Error);
+                    Log($"Device loading failed", LogStatus.Error);
             }
         }
 
@@ -308,23 +308,6 @@ namespace Supervisor
                 var e = new PropertyChangedEventArgs(propertyName);
                 handler(this, e);
             }
-        }
-    }
-
-    public class LogArgs : EventArgs
-    {
-        public enum LogStatus
-        {
-            Ok,
-            Error,
-            Success
-        }
-        public string Message { get; set; }
-        public LogStatus Status { get; set; }
-        public LogArgs(string message, LogStatus status)
-        {
-            Message = message;
-            Status = status;
         }
     }
 }

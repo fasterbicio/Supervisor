@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Supervisor"
         mc:Ignorable="d" Name="Main"
         Title="MainWindow" Height="800" Width="1280"
-        Loaded="Window_Loaded" Icon="media/remote.png" WindowStartupLocation="CenterScreen">
+        Loaded="Window_Loaded" Icon="media/remote.png" WindowStartupLocation="CenterScreen" WindowState="Maximized">
     <Window.Resources>
         <local:NotBool x:Key="notBool"/>
         <local:ConnectToColor x:Key="connectToColor"/>

@@ -162,7 +162,7 @@ namespace Supervisor
             if (machine == null)
                 bw = new BuilderWindow();
             else
-                bw = new BuilderWindow(machine.ToArchetype());
+                bw = new BuilderWindow(machine.ToTemplate());
 
             if (bw.ShowDialog() == true)
             {
@@ -185,6 +185,20 @@ namespace Supervisor
             Created = true;
             Disconnected = true;
             return true;
+        }
+
+        private bool SaveSettings(string path)
+        {
+            MachineTemplate machine = this.machine.ToTemplate();
+            MachineTemplate settingsMachine = new MachineTemplate();
+
+            settingsMachine.Model = machine.Model;
+            foreach(RegisterTemplate reg in machine.Settings)
+            {
+                settingsMachine.Settings.Add(reg);
+            }
+
+            return MachineSerializer.SerializeTemplate(settingsMachine, path);
         }
 
         private void Run()
@@ -267,6 +281,23 @@ namespace Supervisor
         private void EditButton_Click(object sender, RoutedEventArgs e)
         {
             OpenBuilder();
+        }
+
+        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "SETTINGS file | *.settings";
+            sfd.DefaultExt = ".settings";
+            sfd.FileName = $"{machine.Model}_{DateTime.Now:yyyyMMddHHmmss}";
+            if (sfd.ShowDialog() == true)
+            {
+                SaveSettings(sfd.FileName);
+            }
+        }
+
+        private void SendButton_Click(object sender, RoutedEventArgs e)
+        {
+
         }
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)

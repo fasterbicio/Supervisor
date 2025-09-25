@@ -13,12 +13,12 @@ namespace Supervisor
     public partial class BuilderWindow : Window, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        public MachineArchetype Machine
+        public MachineTemplate Machine
         {
             get { return _Machine; }
             set { _Machine = value; OnPropertyChanged(); }
         }
-        public List<RegisterArchetype> Registers
+        public List<RegisterTemplate> Registers
         {
             get { return _Registers; }
             set { _Registers = value; OnPropertyChanged(); }
@@ -29,21 +29,21 @@ namespace Supervisor
             set { _SelectedRegister = value; OnPropertyChanged(); RefreshEditor(); }
         }
 
-        private MachineArchetype _Machine;
+        private MachineTemplate _Machine;
         private int _SelectedRegister;
-        private List<RegisterArchetype> _Registers;
+        private List<RegisterTemplate> _Registers;
 
         public BuilderWindow()
         {
             InitializeComponent();
 
-            Machine = new MachineArchetype();
-            Registers = new List<RegisterArchetype>();
+            Machine = new MachineTemplate();
+            Registers = new List<RegisterTemplate>();
 
             DataContext = this;
         }
 
-        public BuilderWindow(MachineArchetype machine)
+        public BuilderWindow(MachineTemplate machine)
         {
             InitializeComponent();
 
@@ -56,7 +56,7 @@ namespace Supervisor
 
         private int Add()
         {
-            RegisterArchetype register = new RegisterArchetype();
+            RegisterTemplate register = new RegisterTemplate();
             Registers.Add(register);
             return Registers.Count - 1;
         }
@@ -69,7 +69,7 @@ namespace Supervisor
 
         private void Import(string filename)
         {
-            Machine = MachineSerializer.DeserializeArchetype(filename);
+            Machine = MachineSerializer.DeserializeTemplate(filename);
             Registers = Machine.Registers.Concat(Machine.Settings).ToList();
             Sort();
         }
@@ -77,7 +77,7 @@ namespace Supervisor
         private bool Export(string filename)
         {
             AssignToMachine();
-            return MachineSerializer.SerializeArchetype(Machine, filename);
+            return MachineSerializer.SerializeTemplate(Machine, filename);
         }
 
         private void Sort()

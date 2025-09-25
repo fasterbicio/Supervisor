@@ -26,38 +26,60 @@
         </Grid.ColumnDefinitions>
 
         <ToolBar Grid.Row="0" Grid.ColumnSpan="2" Margin="5 5 0 5" ToolBarTray.IsLocked="True" Background="White" Width="{Binding ElementName=Main, Path=ActualWidth}">
-            <Button ToolTip="New Device" Click="NewButton_Click">
+            <Button ToolTip="New Device" Click="NewButton_Click" Width="50">
                 <StackPanel>
                     <Image Source="media\new.png" Height="20" RenderOptions.BitmapScalingMode="HighQuality"/>
                     <Label HorizontalAlignment="Center">New</Label>
                 </StackPanel>
             </Button>
-            <Button ToolTip="Open Device" Click="OpenButton_Click">
+            <Button ToolTip="Open Device" Click="OpenButton_Click" Width="50">
                 <StackPanel>
                     <Image Source="media\open.png" Height="20" RenderOptions.BitmapScalingMode="HighQuality"/>
                     <Label HorizontalAlignment="Center">Open</Label>
                 </StackPanel>
             </Button>
-            <Button ToolTip="Open Machine Builder" Click="EditButton_Click" IsEnabled="{Binding Disconnected, Mode=TwoWay}">
+            <Button ToolTip="Open Machine Builder" Click="EditButton_Click" Width="50" IsEnabled="{Binding Disconnected, Mode=TwoWay}">
                 <StackPanel>
                     <Image Source="media/edit.png" Height="20" RenderOptions.BitmapScalingMode="HighQuality"/>
                     <Label HorizontalAlignment="Center">Edit</Label>
                 </StackPanel>
             </Button>
+            
+            <Separator/>
+
+            <Button ToolTip="Save Settings to File" Name="SaveButton" Click="SaveButton_Click" Width="50">
+                <StackPanel>
+                    <Image Source="media/save.png" Height="20" RenderOptions.BitmapScalingMode="HighQuality" />
+                    <Label HorizontalAlignment="Center" Padding="0">Save</Label>
+                    <Label HorizontalAlignment="Center" Padding="0">Settings</Label>
+                </StackPanel>
+            </Button>
+            <Button ToolTip="Write Settings from File" Name="SendButton" Click="SendButton_Click" Width="50" IsEnabled="{Binding Disconnected, Mode=TwoWay}">
+                <StackPanel>
+                    <Image Source="media/download.png" Height="20" RenderOptions.BitmapScalingMode="HighQuality"/>
+                    <Label HorizontalAlignment="Center" Padding="0">Write</Label>
+                    <Label HorizontalAlignment="Center" Padding="0">Settings</Label>
+                </StackPanel>
+            </Button>
 
             <Separator/>
-            <Button ToolTip="Connect to Device" Name="ConnectButton" Click="ConnectButton_Click" IsEnabled="{Binding Disconnected, Mode=TwoWay}">
-                <StackPanel>
-                    <Image Source="media/play.png" Height="20" RenderOptions.BitmapScalingMode="HighQuality" />
-                    <Label HorizontalAlignment="Center">Connect</Label>
-                </StackPanel>
-            </Button>
-            <Button ToolTip="Disconnect from Device" Name="DisconnectButton" Click="DisconnectButton_Click" IsEnabled="{Binding Connected, Mode=TwoWay}">
-                <StackPanel>
-                    <Image Source="media/stop.png" Height="20" RenderOptions.BitmapScalingMode="HighQuality"/>
-                    <Label HorizontalAlignment="Center">Disconnect</Label>
-                </StackPanel>
-            </Button>
+
+            <Grid>
+                <Button ToolTip="Connect to Device" Name="ConnectButton" Click="ConnectButton_Click" Width="50" Background="White" BorderThickness="0"
+                    IsEnabled="{Binding Disconnected, Mode=TwoWay}" Visibility="{Binding Disconnected, Converter={StaticResource boolVisibility}}">
+                    <StackPanel>
+                        <Image Source="media/cycle.png" Height="20" RenderOptions.BitmapScalingMode="HighQuality" />
+                        <Label HorizontalAlignment="Center">Run</Label>
+                    </StackPanel>
+                </Button>
+                <Button ToolTip="Disconnect from Device" Name="DisconnectButton" Click="DisconnectButton_Click" Width="50" Background="White" BorderThickness="0"
+                    IsEnabled="{Binding Connected, Mode=TwoWay}" Visibility="{Binding Connected, Converter={StaticResource boolVisibility}}">
+                    <StackPanel>
+                        <Image Source="media/block.png" Height="20" RenderOptions.BitmapScalingMode="HighQuality"/>
+                        <Label HorizontalAlignment="Center">Stop</Label>
+                    </StackPanel>
+                </Button>
+            </Grid>
         </ToolBar>
 
         <Expander Grid.Row="1" Grid.Column="0" ExpandDirection="Right" Margin="10"

@@ -142,15 +142,14 @@
   <ItemGroup>
     <Resource Include="media\open.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="media\save.png" />
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="media\remote.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="remote.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="media\save.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="media\delete.png" />
@@ -162,10 +161,13 @@
     <Resource Include="media\edit.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="media\play.png" />
+    <Resource Include="media\block.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="media\stop.png" />
+    <Resource Include="media\cycle.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="media\download.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

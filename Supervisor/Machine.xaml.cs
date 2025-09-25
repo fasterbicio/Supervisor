@@ -251,16 +251,16 @@ namespace Supervisor
         {
             IsModified = true;
         }
-        public MachineArchetype ToArchetype()
+        public MachineTemplate ToTemplate()
         {
-            MachineArchetype machine = new MachineArchetype();
+            MachineTemplate machine = new MachineTemplate();
 
             machine.Model = Model;
             machine.Type = Type;
 
             for (int i = 0; i < Registers.Count; i++)
             {
-                RegisterArchetype register = new RegisterArchetype();
+                RegisterTemplate register = new RegisterTemplate();
 
                 register.Description = Registers[i].Description;
                 register.UM = Registers[i].UM;
@@ -269,12 +269,14 @@ namespace Supervisor
                 register.Address = Registers[i].Address;
                 register.Type = Registers[i].Type;
                 register.States.AddRange(Registers[i].States);
+                register.Value = Registers[i].Value;
+                register.GainedValue = Registers[i].GainedValue;
 
                 machine.Registers.Add(register);
             }
             for (int i = 0; i < Settings.Count; i++)
             {
-                RegisterArchetype register = new RegisterArchetype();
+                RegisterTemplate register = new RegisterTemplate();
 
                 register.Description = Settings[i].Description;
                 register.UM = Settings[i].UM;
@@ -283,6 +285,8 @@ namespace Supervisor
                 register.Address = Settings[i].Address;
                 register.Type = Settings[i].Type;
                 register.States.AddRange(Settings[i].States);
+                register.Value = Settings[i].Value;
+                register.GainedValue = Settings[i].GainedValue;
 
                 machine.Settings.Add(register);
             }

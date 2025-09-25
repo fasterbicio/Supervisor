@@ -66,32 +66,32 @@ namespace Supervisor
 
         public static Machine Deserialize(string path)
         {
-            var machineArchetype = new MachineArchetype();
-            machineArchetype = (MachineArchetype)Deserialize(machineArchetype, path);
-            return machineArchetype.ToMachine();
+            var machineTemplate = new MachineTemplate();
+            machineTemplate = (MachineTemplate)Deserialize(machineTemplate, path);
+            return machineTemplate.ToMachine();
         }
 
-        public static MachineArchetype DeserializeArchetype(string path)
+        public static MachineTemplate DeserializeTemplate(string path)
         {
-            var machineArchetype = new MachineArchetype();
-            machineArchetype = (MachineArchetype)Deserialize(machineArchetype, path);
-            return machineArchetype;
+            var machineTemplate = new MachineTemplate();
+            machineTemplate = (MachineTemplate)Deserialize(machineTemplate, path);
+            return machineTemplate;
         }
 
         public static bool Serialize(Machine machine, string path)
         {
-            var machineArchetype = machine.ToArchetype();
-            return Serialize(machineArchetype, path);
+            var machineTemplate = machine.ToTemplate();
+            return Serialize(machineTemplate, path);
         }
 
-        public static bool SerializeArchetype(MachineArchetype machineArchetype, string path)
+        public static bool SerializeTemplate(MachineTemplate machineTemplate, string path)
         {
-            return Serialize(machineArchetype, path);
+            return Serialize(machineTemplate, path);
         }
     }
 
     [Serializable]
-    public class MachineArchetype: INotifyPropertyChanged
+    public class MachineTemplate: INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         public string Model
@@ -104,12 +104,12 @@ namespace Supervisor
             get { return _Type; }
             set { _Type = value; OnPropertyChanged(); }
         }
-        public List<RegisterArchetype> Registers
+        public List<RegisterTemplate> Registers
         {
             get { return _Registers; }
             set { _Registers = value; OnPropertyChanged(); }
         }
-        public List<RegisterArchetype> Settings
+        public List<RegisterTemplate> Settings
         {
             get { return _Settings; }
             set { _Settings = value; OnPropertyChanged(); }
@@ -117,13 +117,13 @@ namespace Supervisor
 
         private string _Model;
         private int _Type;
-        private List<RegisterArchetype> _Registers;
-        private List<RegisterArchetype> _Settings;
+        private List<RegisterTemplate> _Registers;
+        private List<RegisterTemplate> _Settings;
 
-        public MachineArchetype()
+        public MachineTemplate()
         {
-            Registers = new List<RegisterArchetype>();
-            Settings = new List<RegisterArchetype>();
+            Registers = new List<RegisterTemplate>();
+            Settings = new List<RegisterTemplate>();
         }
         public Machine ToMachine()
         {
@@ -180,7 +180,7 @@ namespace Supervisor
     }
 
     [Serializable]
-    public class RegisterArchetype: INotifyPropertyChanged
+    public class RegisterTemplate: INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         public string Description
@@ -218,6 +218,8 @@ namespace Supervisor
             get { return _Gain; }
             set { _Gain = value; OnPropertyChanged(); }
         }
+        public short Value { get; set; }
+        public double GainedValue { get; set; }
 
         private string _Description;
         private string _UM;
@@ -227,7 +229,7 @@ namespace Supervisor
         private RegisterType _Type;
         private double _Gain;
 
-        public RegisterArchetype()
+        public RegisterTemplate()
         {
             States = new List<string>();
             Gain = 1.0;

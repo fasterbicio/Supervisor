@@ -32,6 +32,7 @@ namespace Supervisor
         private MachineTemplate _Machine;
         private int _SelectedRegister;
         private List<RegisterTemplate> _Registers;
+        private int lastIndex = -1;
 
         public BuilderWindow()
         {
@@ -56,8 +57,11 @@ namespace Supervisor
 
         private int Add()
         {
-            RegisterTemplate register = new RegisterTemplate();
-            Registers.Add(register);
+            if (lastIndex < 0 || lastIndex >= Registers.Count)
+                Registers.Add(new RegisterTemplate());
+            else
+                Registers.Add(Registers[lastIndex].Clone(1));
+
             return Registers.Count - 1;
         }
 
@@ -97,7 +101,10 @@ namespace Supervisor
             if (SelectedRegister < 0) return;
             Editor.DataContext = null;
             if (Registers.Count > 0)
+            {
                 Editor.DataContext = Registers[SelectedRegister];
+                lastIndex = SelectedRegister;
+            }
         }
 
         private void AssignToMachine()

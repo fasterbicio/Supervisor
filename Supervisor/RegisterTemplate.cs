@@ -60,6 +60,20 @@ namespace Supervisor
             States = new List<string>();
             Gain = 1.0;
         }
+        public RegisterTemplate Clone(int addressOffset)
+        {
+            RegisterTemplate result = new RegisterTemplate();
+
+            result.Description = Description;
+            result.UM = UM;
+            result.States.AddRange(States);
+            result.ReadWrite = ReadWrite;
+            result.Address = Address + addressOffset;
+            result.Type = Type;
+            result.Gain = Gain;
+
+            return result;
+        }
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChangedEventHandler handler = this.PropertyChanged;

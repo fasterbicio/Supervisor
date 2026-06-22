@@ -10,7 +10,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Giovanni Lucenti")]
 [assembly: AssemblyProduct("Supervisor")]
-[assembly: AssemblyCopyright("Copyright © Aermec 2025")]
+[assembly: AssemblyCopyright("Copyright © Aermec 2026")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -49,5 +49,5 @@ using System.Windows;
 // È possibile specificare tutti i valori oppure impostare valori predefiniti per i numeri relativi alla revisione e alla build
 // usando l'asterisco '*' come illustrato di seguito:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.2")]
-[assembly: AssemblyFileVersion("2.2")]
+[assembly: AssemblyVersion("2.3")]
+[assembly: AssemblyFileVersion("2.3")]
